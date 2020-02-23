@@ -43,11 +43,12 @@ end
 Bounds checking for input values
 Return input value if within specified bounds, else return NaN
 """
-function check(to_check::T, bounds::Tuple{T,T}) where {T<:Real}
+function check(to_check::T1, bounds::Tuple{T2,T2}) where {T1<:Real, T2<:Real}
     if bounds[1] <= to_check <= bounds[2]
         return to_check
+    else
+        return NaN
     end
-    return NaN
 end
 
 """
