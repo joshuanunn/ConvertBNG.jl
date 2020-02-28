@@ -78,7 +78,7 @@ end
 """
 Intermediate calculation used for lon, lat to ETRS89 and reverse conversion
 """
-function compute_m(ϕ::T, b::T, n::T) where {T<:Real}
+@fastmath function compute_m(ϕ::T, b::T, n::T) where {T<:Real}
     n² = n ^ 2
     n³ = n ^ 3
     result = b * F₀ * (
@@ -93,7 +93,7 @@ end
 """
 Perform Longitude, Latitude to ETRS89 conversion
 """
-function convert_etrs89(longitude::T, latitude::T) where {T<:Real}
+@fastmath function convert_etrs89(longitude::T, latitude::T) where {T<:Real}
     # Input is restricted to the UK bounding box
     # Convert bounds-checked input to degrees, or return an Err
     λ = deg2rad(check(longitude, (MIN_LONGITUDE, MAX_LONGITUDE)))
@@ -120,13 +120,13 @@ function convert_etrs89(longitude::T, latitude::T) where {T<:Real}
     I = m + N₀
     II = ν / 2.0 * sinϕ * cosϕ
     III = ν / 24.0 * sinϕ * cos³ϕ * (5.0 - tan²ϕ + 9.0 * η²)
-    @fastmath IIIA = ν / 720.0 * sinϕ * cos⁵ϕ * (61.0 - 58.0 * tan²ϕ + tan⁴ϕ)
+    IIIA = ν / 720.0 * sinϕ * cos⁵ϕ * (61.0 - 58.0 * tan²ϕ + tan⁴ϕ)
     IV = ν * cosϕ
     V = ν / 6.0 * cos³ϕ * (ν / ρ - tan²ϕ)
-    @fastmath VI = ν / 120.0 * cos⁵ϕ * (5.0 - 18.0 * tan²ϕ + tan⁴ϕ + 14.0 * η² - 58.0 * tan²ϕ * η²)
+    VI = ν / 120.0 * cos⁵ϕ * (5.0 - 18.0 * tan²ϕ + tan⁴ϕ + 14.0 * η² - 58.0 * tan²ϕ * η²)
     l = λ - λ₀
-    @fastmath north = I + II * l ^ 2 + III * l ^ 4 + IIIA * l ^ 6
-    @fastmath east = E₀ + IV * l + V * l ^ 3 + VI * l ^ 5
+    north = I + II * l ^ 2 + III * l ^ 4 + IIIA * l ^ 6
+    east = E₀ + IV * l + V * l ^ 3 + VI * l ^ 5
 
     return [round_to_mm(east) round_to_mm(north)]
 end
@@ -251,8 +251,8 @@ function convert_osgb36_to_ll(en::Array{T,2}) where{T<:Real}
     ll_arr = zeros(T, size(en))
     # Transform
     #Threads.@threads
-    for i in 1:size(ll_arr)[1]
-        ll_arr[i,:] .= convert_osgb36_to_ll(en[i,1], en[i,2])
+    for i in 1:size(en)[1]
+        ll_arr[i,:] = convert_osgb36_to_ll(en[i,1], en[i,2])
     end
     return ll_arr
 end
