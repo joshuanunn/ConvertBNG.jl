@@ -154,7 +154,7 @@ Note that either GRS80 or Airy 1830 ellipsoids can be passed
     tanϕ = tan(ϕ)
     tan²ϕ = tanϕ ^ 2
     tan⁴ϕ = tanϕ ^ 4
-    tan⁶ϕ = tan⁴ϕ * tan²ϕ    
+    tan⁶ϕ = tan⁴ϕ * tan²ϕ
     secϕ = 1.0 / cos(ϕ)
     
     ν = a * F₀ * (1.0 - e² * sin²ϕ) ^ -0.5
@@ -203,8 +203,8 @@ function convert_osgb36(lonlat::Array{T,2}) where{T<:Real}
     en_arr = zeros(T, size(lonlat))
     # Transform
     #Threads.@threads
-    for i in 1:size(en_arr)[1]
-        en_arr[i,:] .= convert_osgb36(lonlat[i,1], lonlat[i,2])
+    for i in 1:size(lonlat)[1]
+        en_arr[i,:] = convert_osgb36(lonlat[i,1], lonlat[i,2])
     end
     return en_arr
 end

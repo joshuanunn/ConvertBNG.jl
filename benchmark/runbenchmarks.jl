@@ -13,7 +13,7 @@ function benchmark_convert_bng()
     lats = rand(S:0.01:N, num_coords, 1)
 
     lons_lats = hcat(lons, lats)
-    return convert_osgb36(lons_lats)
+    convert_osgb36(lons_lats)
 end
 
 show(@benchmark benchmark_convert_bng())
