@@ -29,9 +29,9 @@ const F₀ = 0.9996012717
 const MAX_EASTING = 700000.000
 const MAX_NORTHING = 1250000.000
 # Coordinate bounds for lon, lat
-const MIN_LONGITUDE = -7.5600
+const MIN_LONGITUDE = -8.5790
 const MAX_LONGITUDE = 1.7800
-const MIN_LATITUDE = 49.9600
+const MIN_LATITUDE = 49.9220
 const MAX_LATITUDE = 60.8400
 # Const container for ostn15 shift data
 const OSTN15_DATA = Ref{Array{Float64,2}}()
