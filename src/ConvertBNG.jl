@@ -145,9 +145,9 @@ Note that either GRS80 or Airy 1830 ellipsoids can be passed
     dN = check(northings, (0.0, MAX_NORTHING)) - N₀
     ϕ = ϕ₀ + dN / (a * F₀)
     m = compute_m(ϕ, b, n)
-    while (dN - m) >= 0.001
-        ϕ += (dN - m) / (a * F₀)
+    while (dN - m) >= 0.00001
         m = compute_m(ϕ, b, n)
+        ϕ += (dN - m) / (a * F₀)
     end
     
     sin²ϕ = sin(ϕ) ^ 2

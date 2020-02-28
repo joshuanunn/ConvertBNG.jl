@@ -1,9 +1,9 @@
 using ConvertBNG
 using Test
 
-const PREC_EN = 0.001
-const PREC_LL = 0.0000001
-const PREC_FL = 0.000000001
+const PREC_EN = 0.002       #  2 mm for easting, northing absolute accuracy
+const PREC_LL = 0.0000001   #  8 dp for lat, lon absolute accuracy
+const PREC_FL = 0.000000001 # 10 dp for floating point comparison
 
 const AIRY_1830_SEMI_MAJOR = 6377563.396
 const AIRY_1830_SEMI_MINOR = 6356256.909
