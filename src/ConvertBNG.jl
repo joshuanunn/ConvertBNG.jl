@@ -2,6 +2,8 @@ module ConvertBNG
 
 import DelimitedFiles
 
+export convert_bng
+export convert_lonlat
 export convert_osgb36
 export convert_etrs89
 export convert_osgb36_to_ll
@@ -280,6 +282,14 @@ function convert_osgb36_to_etrs89(E::T, N::T) where {T<:Real}
     y = round_to_mm(N - dy)
     return [x y]
 end
+
+"""
+Function alias names to align with convert_bng Python library
+"""
+function convert_bng(lonlat) convert_osgb36(lonlat) end
+function convert_bng(lon, lat) convert_osgb36(lon, lat) end
+function convert_lonlat(EN) convert_osgb36_to_ll(EN) end
+function convert_lonlat(E, N) convert_osgb36_to_ll(E, N) end
 
 """
 Try to get OSTN15 shift parameters, and calculate offsets
