@@ -227,7 +227,7 @@ Convert OSGB36 coordinates to Lon, Lat using OSTN15 data
 """
 function convert_osgb36_to_ll(E::T, N::T) where {T<:Real}
     # Apply reverse OSTN15 adustments
-    epsilon = 0.0001
+    epsilon = 0.009
     dx, dy, _ = ostn15_shifts(E, N)
     x, y = E - dx, N - dy
     last_dx, last_dy = dx, dy
