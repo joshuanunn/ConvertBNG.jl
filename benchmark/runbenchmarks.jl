@@ -2,11 +2,11 @@ using ConvertBNG
 using BenchmarkTools
 
 function benchmark_convert_bng()
-    # London bounding box
-    N = 51.691874116909894
-    E = 0.3340155643740321
-    S = 51.28676016315085
-    W = -0.5103750689005356
+    # UK bounding box
+    N = 60.83
+    E =  1.77
+    S = 49.93
+    W = -8.57
 
     num_coords = 1000000
     lons = rand(W:0.01:E, num_coords, 1)
