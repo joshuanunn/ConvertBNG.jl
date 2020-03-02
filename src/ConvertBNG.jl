@@ -194,10 +194,7 @@ function convert_osgb36(longitude::T, latitude::T) where {T<:Real}
     # Convert input to ETRS89
     eastings, northings = convert_etrs89(longitude, latitude)
     # Obtain OSTN15 corrections, and incorporate
-    e_shift, n_shift, _ = ostn15_shifts(eastings, northings)
-    e_corr = round_to_mm(eastings + e_shift)
-    n_corr = round_to_mm(northings + n_shift)
-    return [e_corr n_corr]
+    return convert_etrs89_to_osgb36(eastings, northings)
 end
 
 function convert_osgb36(lonlat::Array{T,2}) where{T<:Real}
@@ -227,25 +224,9 @@ Convert OSGB36 coordinates to Lon, Lat using OSTN15 data
 """
 function convert_osgb36_to_ll(E::T, N::T) where {T<:Real}
     # Apply reverse OSTN15 adustments
-    epsilon = 0.009
-    dx, dy, _ = ostn15_shifts(E, N)
-    x, y = E - dx, N - dy
-    last_dx, last_dy = dx, dy
-    while true
-        dx, dy = ostn15_shifts(x, y)
-        x = E - dx
-        y = N - dy
-        # If the difference […] is more than 0.00010m (User Guide, p15)
-        if abs(dx - last_dx) < epsilon && abs(dy - last_dy) < epsilon
-            break
-        end
-        last_dx = dx
-        last_dy = dy
-    end
-    x = round_to_mm(E - dx)
-    y = round_to_mm(N - dy)
+    x, y = convert_osgb36_to_etrs89(E, N)
     # We've converted to ETRS89, so we need to use the WGS84/ GRS80 ellipsoid constants
-    return convert_to_ll(x, y, GRS80_SEMI_MAJOR, GRS80_SEMI_MINOR)
+    return convert_etrs89_to_ll(x, y)
 end
 
 function convert_osgb36_to_ll(en::Array{T,2}) where{T<:Real}
@@ -264,7 +245,7 @@ Convert OSGB36 coordinates to ETRS89 using OSTN15 data
 """
 function convert_osgb36_to_etrs89(E::T, N::T) where {T<:Real}
     # Apply reverse OSTN15 adustments
-    epsilon = 0.00001
+    epsilon = 0.009
     dx, dy, _ = ostn15_shifts(E, N)
     x, y = E - dx, N - dy
     last_dx, last_dy = dx, dy
