@@ -7,6 +7,7 @@ export convert_lonlat
 export convert_osgb36
 export convert_etrs89
 export convert_osgb36_to_ll
+export convert_osgb36_to_etrs89
 export convert_to_ll
 export get_ostn_ref
 export ostn15_shifts
@@ -62,14 +63,16 @@ function check(to_check::T1, bounds::Tuple{T2,T2}) where {T1<:Real, T2<:Real}
 end
 
 """
-Round a float to nearest mm
+Round a float coordinate pair to nearest mm
 """
-function round_to_mm(position_m::T) where {T<:AbstractFloat}
-    return round(position_m * 1000.0, digits=0) / 1000.0
+function round_to_mm(x::T, y::T) where {T<:AbstractFloat}
+    new_x = round(x * 1000.0, digits=0) / 1000.0
+    new_y = round(y * 1000.0, digits=0) / 1000.0
+    return new_x, new_y
 end
 
 """
-Round a float to eight decimal places
+Round a float coordinate pair to eight decimal places
 """
 function round_to_eight(x::T, y::T) where {T<:AbstractFloat}
     new_x = round(x * 100000000.0, digits=0) / 100000000.0
@@ -130,7 +133,7 @@ Perform Longitude, Latitude to ETRS89 conversion
     north = I + II * l ^ 2 + III * l ^ 4 + IIIA * l ^ 6
     east = E₀ + IV * l + V * l ^ 3 + VI * l ^ 5
 
-    return [round_to_mm(east) round_to_mm(north)]
+    return [east north]
 end
 
 """
@@ -211,11 +214,10 @@ end
 """
 Perform ETRS89 to OSGB36 conversion, using [OSTN15] data
 """
-function convert_etrs89_to_osgb36(eastings::T, northings::T) where {T<:Real}
+function convert_etrs89_to_osgb36(E::T, N::T) where {T<:Real}
     # Obtain OSTN15 corrections, and incorporate
-    e_shift, n_shift, _ = ostn15_shifts(eastings, northings)
-    e_corr = round_to_mm(eastings + e_shift)
-    n_corr = round_to_mm(northings + n_shift)
+    e_shift, n_shift, _ = ostn15_shifts(E, N)
+    e_corr, n_corr = round_to_mm(E + e_shift, N + n_shift)
     return [e_corr n_corr]
 end
 
@@ -245,12 +247,12 @@ Convert OSGB36 coordinates to ETRS89 using OSTN15 data
 """
 function convert_osgb36_to_etrs89(E::T, N::T) where {T<:Real}
     # Apply reverse OSTN15 adustments
-    epsilon = 0.009
+    epsilon = 0.00001
     dx, dy, _ = ostn15_shifts(E, N)
     x, y = E - dx, N - dy
     last_dx, last_dy = dx, dy
-    while true
-        dx, dy = ostn15_shifts(x, y)
+    while !isnan(dx)
+        dx, dy, _ = ostn15_shifts(x, y)
         x = E - dx
         y = N - dy
         if abs(dx - last_dx) < epsilon && abs(dy - last_dy) < epsilon
@@ -259,8 +261,8 @@ function convert_osgb36_to_etrs89(E::T, N::T) where {T<:Real}
         last_dx = dx
         last_dy = dy
     end
-    x = round_to_mm(E - dx)
-    y = round_to_mm(N - dy)
+    x = E - dx
+    y = N - dy
     return [x y]
 end
 
@@ -342,7 +344,7 @@ function ostn15_shifts(x::T, y::T) where {T<:Real}
     # this isn't needed for this library, since it's a height offset
     sg = f0 * s0_3 + f1 * s1_3 + f2 * s2_3 + f3 * s3_3
     
-    return round_to_mm(se), round_to_mm(sn), round_to_mm(sg)
+    return se, sn, sg
 end
 
 end # module

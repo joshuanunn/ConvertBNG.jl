@@ -24,7 +24,7 @@ const AIRY_1830_SEMI_MINOR = 6356256.909
         @test convert_lonlat(651409.804, 313177.450) ≈ [1.716073973 52.658007833] atol=PREC_LL
         # Check OSTN15 shift retrival
         @test collect(get_ostn_ref(651, 313)) ≈ [102.787, -78.242, 44.236] atol=PREC_FL
-        @test collect(ostn15_shifts(651307.003, 313255.686)) ≈ [102.801, -78.236, 44.228] atol=PREC_FL
+        @test collect(ostn15_shifts(651307.003, 313255.686)) ≈ [102.800790098, -78.235984076, 44.228405219] atol=PREC_FL
         
         # From Transformations and OSGM15 User Guide - Annexe C
         # Caister Water Tower example
