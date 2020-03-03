@@ -3,7 +3,7 @@ A Julia library for fast conversion between WGS84 longitude and latitude and Bri
 
 This is a derived work of original repositories written by Stephan Hügel, which include a Rust binary [lonlat_bng](https://github.com/urschrei/lonlat_bng) and the corresponding Python utility library [convertbng](https://github.com/urschrei/convertbng). As Python is relatively slow, [convertbng](https://github.com/urschrei/convertbng) utilises a [Rust binary](https://github.com/urschrei/lonlat_bng) to do the heavy lifting.
 
-As Julia is JIT compiled, all of the conversions can remain within the same lanuguage and still exhibit good performance - this package has been written exclusively in Julia and has only a single external dependency.
+As Julia is JIT compiled, all of the conversions can remain within the same language and still exhibit good performance - this package has been written exclusively in Julia and has only a single external dependency.
 
 ## Accuracy
 Conversions which solely use Helmert transforms are only accurate to approximately 5 metres and are **not suitable** for calculations or conversions where accuracy is important. To correct for these distortions in the OSGB36 terrestrial reference frame, Ordnance Survey has developed a ‘rubber-sheet’ transformation model called OSTN15. This model is available as grids of northing and easting shifts between ETRS89 and OSGB36 covering the UK at a one km resolution. Precision easting and northing shifts for each point can be obtained by a bilinear interpolation. [See here](https://www.ordnancesurvey.co.uk/documents/resources/guide-coordinate-systems-great-britain.pdf) for more information.
