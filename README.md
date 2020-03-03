@@ -18,6 +18,11 @@ Pkg> add https://github.com/joshuanunn/ConvertBNG.jl
 ```
 
 ## Use
+Following installation, import the package to make all functions available:
+```julia
+julia> using ConvertBNG
+```
+
 The primary functions available in this package are:
 * ```convert_bng```	        Perform Lon, Lat to OSGB36 Eastings, Northings conversion, using OSTN15 data
 * ```convert_lonlat```  Convert OSGB36 Eastings, Northing coordinates to Lon, Lat using OSTN15 data
@@ -86,7 +91,7 @@ julia> convert_etrs89_to_ll(651307.003, 313255.686)       == [1.71607397 52.6580
 The difference between ETRS89 and OSGB36 is determined by extracting the raw OSTN15 shifts for the area of interest and using bilinear interpolation to derive a more accurate set of shifts. For this example the raw shifts are ```[102.787, -78.242, 44.236]```, which are subsequently refined to ```[102.801, -78.236, 44.228]```.
 
 ## Benchmarks
-Multi-threading support to be added soon for Julia users of v1.3 onwards. Detailed performance comparisons will be added at this point.
+Multi-threading support to be added soon for users of Julia v1.3 onwards. Detailed performance comparisons will be added at this point.
 
 ## Tests
 After installation, the unit tests can (and should) be run by entering the following at the Julia REPL:
