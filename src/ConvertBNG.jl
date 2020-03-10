@@ -204,8 +204,7 @@ function convert_osgb36(lonlat::Array{T,2}) where{T<:Real}
     # Create empty output array
     en_arr = zeros(T, size(lonlat))
     # Transform
-    #Threads.@threads
-    for i in 1:size(lonlat)[1]
+    Threads.@threads for i in 1:size(lonlat)[1]
         en_arr[i,:] = convert_osgb36(lonlat[i,1], lonlat[i,2])
     end
     return en_arr
@@ -235,8 +234,7 @@ function convert_osgb36_to_ll(en::Array{T,2}) where{T<:Real}
     # Create empty output array
     ll_arr = zeros(T, size(en))
     # Transform
-    #Threads.@threads
-    for i in 1:size(en)[1]
+    Threads.@threads for i in 1:size(en)[1]
         ll_arr[i,:] = convert_osgb36_to_ll(en[i,1], en[i,2])
     end
     return ll_arr
