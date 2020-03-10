@@ -93,6 +93,26 @@ The difference between ETRS89 and OSGB36 is determined by extracting the raw OST
 ## Benchmarks
 Multi-threading support to be added soon for users of Julia v1.3 onwards. Detailed performance comparisons will be added at this point.
 
+* i7-9700K CPU @ 3.60GHz 
+
+| Function | Threads/Cores | Julia (s) | Rust Ctypes (s) | Rust Cython (s) |
+| :---: | :---: | :---: | :---: | :---: |
+| convert_bng | 1 | 14.0 | - | - |
+| convert_bng | 4 | 4.6 | - | - |
+| convert_bng | 8 | 3.1 | 3.3 | 2.0 |
+| convert_latlon | 1 | 22.8 | - | - |
+| convert_latlon | 4 | 6.8 | - | - |
+| convert_latlon | 8 | 4.2 | 6.3 | 3.2 |
+
+* i5-7500 CPU @ 3.40GHz
+
+| Function | Threads/Cores | Julia (s) | Rust Ctypes (s) | Rust Cython (s) |
+| :---: | :---: | :---: | :---: | :---: |
+| convert_bng | 1 | 22.3 | - | - |
+| convert_bng | 4 | 8.0 | 8.5 | 5.5 |
+| convert_latlon | 1 | 34.5 | - | - |
+| convert_latlon | 4 | 10.8 | 16.2 | 9.8 |
+
 ## Tests
 After installation, the unit tests can (and should) be run by entering the following at the Julia REPL:
 ```julia
