@@ -211,6 +211,19 @@ function convert_osgb36(lonlat::Array{T,2}) where{T<:Real}
 end
 
 """
+Non-threaded version of convert_osgb36
+"""
+function convert_osgb36_nothread(lonlat::Array{T,2}) where{T<:Real}
+    # Create empty output array
+    en_arr = zeros(T, size(lonlat))
+    # Transform
+    for i in 1:size(lonlat)[1]
+        en_arr[i,:] = convert_osgb36(lonlat[i,1], lonlat[i,2])
+    end
+    return en_arr
+end
+
+"""
 Perform ETRS89 to OSGB36 conversion, using [OSTN15] data
 """
 function convert_etrs89_to_osgb36(E::T, N::T) where {T<:Real}
@@ -235,6 +248,19 @@ function convert_osgb36_to_ll(en::Array{T,2}) where{T<:Real}
     ll_arr = zeros(T, size(en))
     # Transform
     Threads.@threads for i in 1:size(en)[1]
+        ll_arr[i,:] = convert_osgb36_to_ll(en[i,1], en[i,2])
+    end
+    return ll_arr
+end
+
+"""
+Non-threaded version of convert_osgb36_to_ll
+"""
+function convert_osgb36_to_ll_nothread(en::Array{T,2}) where{T<:Real}
+    # Create empty output array
+    ll_arr = zeros(T, size(en))
+    # Transform
+    for i in 1:size(en)[1]
         ll_arr[i,:] = convert_osgb36_to_ll(en[i,1], en[i,2])
     end
     return ll_arr
@@ -268,8 +294,10 @@ end
 Function alias names to align with convert_bng Python library
 """
 function convert_bng(lonlat) convert_osgb36(lonlat) end
+function convert_bng_nothread(lonlat) convert_osgb36_nothread(lonlat) end
 function convert_bng(lon, lat) convert_osgb36(lon, lat) end
 function convert_lonlat(EN) convert_osgb36_to_ll(EN) end
+function convert_lonlat_nothread(EN) convert_osgb36_to_ll_nothread(EN) end
 function convert_lonlat(E, N) convert_osgb36_to_ll(E, N) end
 
 """

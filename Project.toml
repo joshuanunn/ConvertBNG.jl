@@ -1,8 +1,11 @@
 name = "ConvertBNG"
 uuid = "76c420ca-8e5d-4181-817d-b9cafca33221"
 authors = ["Joshua Nunn <joshuanunn@hotmail.co.uk>"]
-version = "0.1.3"
+version = "0.3.0"
 
 [deps]
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+julia = "1.0.5"
