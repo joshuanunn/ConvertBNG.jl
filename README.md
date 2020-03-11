@@ -8,10 +8,10 @@ As Julia is JIT compiled, all of the conversions can remain within the same lang
 ## Accuracy
 Conversions which solely use Helmert transforms are only accurate to approximately 5 metres and are **not suitable** for calculations or conversions where accuracy is important. To correct for these distortions in the OSGB36 terrestrial reference frame, Ordnance Survey has developed a ‘rubber-sheet’ transformation model called OSTN15. This model is available as grids of northing and easting shifts between ETRS89 and OSGB36 covering the UK at a one km resolution. Precision easting and northing shifts for each point can be obtained by a bilinear interpolation. [See here](https://www.ordnancesurvey.co.uk/documents/resources/guide-coordinate-systems-great-britain.pdf) for more information.
 
-This package is capable of converting all forty ETRS89 lon,lat OS test coordinates to OSGB36 eastings, northings with a maximum error of less than 2 mm, and completes the reverse transformation at an accuracy of a single digit at 8 d.p (~1 mm).
+This package is able to convert all forty ETRS89 lon,lat OS test coordinates to OSGB36 eastings, northings with a maximum error of less than 2 mm, and complete the reverse transformation at an accuracy of a single digit at 8 d.p (~1 mm).
 
 ## Installation
-This package requires Julia v1.0.5 as a minimum and it is recommended that Julia v1.3.1 onwards is used. As this Julia package is currently unregistered, simply enter the following in Pkg mode:
+This package requires Julia ```v1.0.5``` as a minimum and it is recommended that Julia ```v1.3.1``` onwards is used. As this package is currently unregistered, simply enter the following in Pkg mode:
 ```julia
 Pkg> add https://github.com/joshuanunn/ConvertBNG.jl
 ```
@@ -19,9 +19,9 @@ Pkg> add https://github.com/joshuanunn/ConvertBNG.jl
 ## Multi-threading for high performance
 Multi-threading is used automatically when passing arrays of coordinates to the ```convert_bng``` and ```convert_lonlat``` functions. However, by default Julia only utilises a single thread so calculations will be limited to a single CPU core. If high performance is desired, the environment variable ```JULIA_NUM_THREADS``` should be set to the match the number of cores available. Note that this must be set *before* launching the Julia REPL.
 
-For example, enter ```set JULIA_NUM_THREADS=4``` into the Windows command prompt or ```export JULIA_NUM_THREADS=4``` into the Linux terminal. These settings only last the length of the terminal session, so you should launch Julia from the same terminal afterwards. If you want this setting to remain persistent, change the user environment variable in the Windows control panel (```User Accounts``` -> ```Change my environment variables```) or add the above export command to your ```.bashrc``` file or equivalent in Linux. See the **benchmarks** section below for timings.
+For example, enter ```set JULIA_NUM_THREADS=4``` into the Windows command prompt or ```export JULIA_NUM_THREADS=4``` into the Linux terminal. These settings only last the length of the terminal session, so you should launch Julia from the same terminal afterwards. If you want this setting to remain persistent, change the user environment variable in the Windows control panel (```User Accounts``` -> ```Change my environment variables```) or add the above export command to your ```.bashrc``` file or equivalent in Linux. See the **Benchmarks** section below for timings.
 
-If you already have the environment variable ```JULIA_NUM_THREADS``` set to > 1, but you only want to use this package in a single threaded mode, simply call the equivalent ```convert_bng_nothread``` or ```convert_lonlat_nothread``` functions with your array of coordinates.
+If you already have the environment variable ```JULIA_NUM_THREADS``` set to > 1, but you only want to use this package in a single threaded mode, simply call the equivalent ```convert_bng_nothread``` or ```convert_lonlat_nothread``` functions with an array of coordinates.
 
 ## Use
 Following installation, import the package to make all functions available:
