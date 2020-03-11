@@ -16,7 +16,7 @@ This package requires Julia ```v1.0.5``` as a minimum and it is recommended that
 Pkg> add https://github.com/joshuanunn/ConvertBNG.jl
 ```
 
-## Multi-threading for high performance
+## Multi-Threading for High Performance
 Multi-threading is used automatically when passing arrays of coordinates to the ```convert_bng``` and ```convert_lonlat``` functions. However, by default Julia only utilises a single thread so calculations will be limited to a single CPU core. If high performance is desired, the environment variable ```JULIA_NUM_THREADS``` should be set to the match the number of cores available. Note that this must be set *before* launching the Julia REPL.
 
 For example, enter ```set JULIA_NUM_THREADS=4``` into the Windows command prompt or ```export JULIA_NUM_THREADS=4``` into the Linux terminal. These settings only last the length of the terminal session, so you should launch Julia from the same terminal afterwards. If you want this setting to remain persistent, change the user environment variable in the Windows control panel (```User Accounts``` -> ```Change my environment variables```) or add the above export command to your ```.bashrc``` file or equivalent in Linux. See the **Benchmarks** section below for timings.
