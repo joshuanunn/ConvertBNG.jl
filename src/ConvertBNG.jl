@@ -4,6 +4,8 @@ import DelimitedFiles
 
 export convert_bng
 export convert_lonlat
+export convert_bng_nothread
+export convert_lonlat_nothread
 export convert_osgb36
 export convert_etrs89
 export convert_osgb36_to_ll
