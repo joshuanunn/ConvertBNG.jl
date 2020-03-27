@@ -135,7 +135,7 @@ Perform Longitude, Latitude to ETRS89 conversion
     north = I + II * l ^ 2 + III * l ^ 4 + IIIA * l ^ 6
     east = E₀ + IV * l + V * l ^ 3 + VI * l ^ 5
 
-    return [east north]
+    return east, north
 end
 
 """
@@ -184,7 +184,7 @@ Note that either GRS80 or Airy 1830 ellipsoids can be passed
     ϕ = rad2deg(ϕ)
     λ = rad2deg(λ)
     λ, ϕ = round_to_eight(λ, ϕ)
-    return [λ ϕ]
+    return λ, ϕ
 end
 
 function convert_etrs89_to_ll(E::T, N::T) where {T<:Real}
@@ -207,7 +207,7 @@ function convert_osgb36(lonlat::Array{T,2}) where{T<:Real}
     en_arr = zeros(T, size(lonlat))
     # Transform
     Threads.@threads for i in 1:size(lonlat)[1]
-        en_arr[i,:] = convert_osgb36(lonlat[i,1], lonlat[i,2])
+        en_arr[i,:] .= convert_osgb36(lonlat[i,1], lonlat[i,2])
     end
     return en_arr
 end
@@ -220,7 +220,7 @@ function convert_osgb36_nothread(lonlat::Array{T,2}) where{T<:Real}
     en_arr = zeros(T, size(lonlat))
     # Transform
     for i in 1:size(lonlat)[1]
-        en_arr[i,:] = convert_osgb36(lonlat[i,1], lonlat[i,2])
+        en_arr[i,:] .= convert_osgb36(lonlat[i,1], lonlat[i,2])
     end
     return en_arr
 end
@@ -232,7 +232,7 @@ function convert_etrs89_to_osgb36(E::T, N::T) where {T<:Real}
     # Obtain OSTN15 corrections, and incorporate
     e_shift, n_shift, _ = ostn15_shifts(E, N)
     e_corr, n_corr = round_to_mm(E + e_shift, N + n_shift)
-    return [e_corr n_corr]
+    return e_corr, n_corr
 end
 
 """
@@ -250,7 +250,7 @@ function convert_osgb36_to_ll(en::Array{T,2}) where{T<:Real}
     ll_arr = zeros(T, size(en))
     # Transform
     Threads.@threads for i in 1:size(en)[1]
-        ll_arr[i,:] = convert_osgb36_to_ll(en[i,1], en[i,2])
+        ll_arr[i,:] .= convert_osgb36_to_ll(en[i,1], en[i,2])
     end
     return ll_arr
 end
@@ -263,7 +263,7 @@ function convert_osgb36_to_ll_nothread(en::Array{T,2}) where{T<:Real}
     ll_arr = zeros(T, size(en))
     # Transform
     for i in 1:size(en)[1]
-        ll_arr[i,:] = convert_osgb36_to_ll(en[i,1], en[i,2])
+        ll_arr[i,:] .= convert_osgb36_to_ll(en[i,1], en[i,2])
     end
     return ll_arr
 end
@@ -289,7 +289,7 @@ function convert_osgb36_to_etrs89(E::T, N::T) where {T<:Real}
     end
     x = E - dx
     y = N - dy
-    return [x y]
+    return x, y
 end
 
 """
