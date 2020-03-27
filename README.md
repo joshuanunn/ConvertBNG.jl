@@ -33,13 +33,12 @@ The primary functions available in this package are:
 * ```convert_bng```	        Perform Lon, Lat to OSGB36 Eastings, Northings conversion, using OSTN15 data
 * ```convert_lonlat```  Convert OSGB36 Eastings, Northing coordinates to Lon, Lat using OSTN15 data
 
-Coordinates can be passed to these functions as a single pair or as a 2-column array of any length. Transformed coordinates are always returned as a 2-column array, irrespective of the input format. Note that `lon`, `lat` coordinates outside the [UK bounding box](http://spatialreference.org/ref/epsg/27700/) will be transformed to `[NaN NaN]`, which cannot be mapped.
+Coordinates can be passed to these functions as a single pair or as a 2-column array of any length. Transformed coordinates are returned as a tuple for a single point conversion or as a 2-column array for multiple point conversion. Note that `lon`, `lat` coordinates outside the [UK bounding box](http://spatialreference.org/ref/epsg/27700/) will be transformed to `(NaN NaN)`, which cannot be mapped.
 
 Can be used to transform single points:
 ```julia
 julia> e,n = convert_bng(-2.594679, 51.450521)
-1×2 Array{Float64,2}:
- 358772.71  172560.997
+(358772.71, 172560.997)
 
 julia> e
 358772.71
@@ -86,43 +85,43 @@ Using the Caister Water Tower example in the OS Transformations and OSGM15 User 
 
 All of these coordinates can be interrelated using the following function calls, which give the corresponding return values:
 ```julia
-julia> convert_bng(1.716073973, 52.658007833)             == [651409.804 313177.450]
-julia> convert_etrs89(1.716073973, 52.658007833)          == [651307.003 313255.686]
-julia> convert_etrs89_to_osgb36(651307.003, 313255.686)   == [651409.804 313177.450]
+julia> convert_bng(1.716073973, 52.658007833)             == (651409.804 313177.450)
+julia> convert_etrs89(1.716073973, 52.658007833)          == (651307.003 313255.686)
+julia> convert_etrs89_to_osgb36(651307.003, 313255.686)   == (651409.804 313177.450)
 
-julia> convert_lonlat(651409.804, 313177.450)             == [1.71607397 52.65800783]
-julia> convert_osgb36_to_etrs89(651409.804, 313177.450)   == [651307.003 313255.686]
-julia> convert_etrs89_to_ll(651307.003, 313255.686)       == [1.71607397 52.65800783]
+julia> convert_lonlat(651409.804, 313177.450)             == (1.71607397 52.65800783)
+julia> convert_osgb36_to_etrs89(651409.804, 313177.450)   == (651307.003 313255.686)
+julia> convert_etrs89_to_ll(651307.003, 313255.686)       == (1.71607397 52.65800783)
 ```
-The difference between ETRS89 and OSGB36 is determined by extracting the raw OSTN15 shifts for the area of interest and using bilinear interpolation to derive a more accurate set of shifts. For this example the raw shifts are ```[102.787, -78.242, 44.236]```, which are subsequently refined to ```[102.801, -78.236, 44.228]```.
+The difference between ETRS89 and OSGB36 is determined by extracting the raw OSTN15 shifts for the area of interest and using bilinear interpolation to derive a more accurate set of shifts. For this example the raw shifts are ```(102.787, -78.242, 44.236)```, which are subsequently refined to ```(102.801, -78.236, 44.228)```.
 
 ## Benchmarks
 Benchmarks were run on two different systems - a high performance Linux system with an 8-core i7-9700K CPU and a mainstream Windows 10 system with a 4-core i5-7500 CPU. The [benchmark code](/benchmark/runbenchmarks.jl) is derived from that used in the [lonlat_bng](https://github.com/urschrei/lonlat_bng) Rust library and involves getting the total time for converting 50 lots of 1 million random lon,lat pairs to BNG and vice versa. The code can be run in the Julia REPL: ```include("/path/to/package/benchmark/runbenchmarks.jl")```.
 * The benchmarks were run a number of times to ensure that the total times for each case were consistent and the best time from any run is quoted in the results tables below.
-* Julia versions ```v1.0.5```, ```v1.3.1``` and the latest ```v1.4.0-rc2.0``` were tested - all quoted times are those using Julia ```v1.3.1```.
-* The quoted times for Julia ```v1.3.1``` were very consistent and similar to those obtained with the latest ```v1.4.0-rc2.0```. However, Julia ```v1.0.5``` times were upto 25% slower and inconsistent - it is recommended to use later versions.
+* Julia versions ```v1.0.5```, ```v1.3.1``` and ```v1.4.0``` were tested - all quoted times are those using Julia ```v1.4.0```.
+* Note that Julia ```v1.0.5``` times were upto 25% slower than the later veriosns and inconsistent - it is recommended to use later versions.
 * All Julia benchmarks were run with multi-threading, using 1, 4 or 8 CPU cores for comparison.
-* For context, the tables also include the equivalent benchmark times for the [convertbng](https://github.com/urschrei/convertbng) library which uses a [Rust binary](https://github.com/urschrei/lonlat_bng). This has been run in both exposed operational modes (Ctypes and Cython). These binaries are setup to fully utilise the CPU.
+* For context, the tables also include the equivalent benchmark times for the [convertbng](https://github.com/urschrei/convertbng) library which uses a [Rust binary](https://github.com/urschrei/lonlat_bng). This has been run in both exposed operational modes (Ctypes and Cython). These binaries are setup to fully utilise the CPU and so times are only shown for use of all cores.
 
 Results for **8-Core** i7-9700K CPU @ 3.60GHz
 
 | Function | Threads/Cores | Julia (s) | Rust Ctypes (s) | Rust Cython (s) |
 | :---: | :---: | :---: | :---: | :---: |
-| convert_bng | 1 | 14.0 | - | - |
-| convert_bng | 4 | 4.6 | - | - |
-| convert_bng | 8 | 3.1 | 3.3 | 2.0 |
-| convert_latlon | 1 | 22.8 | - | - |
-| convert_latlon | 4 | 6.8 | - | - |
-| convert_latlon | 8 | 4.2 | 6.3 | 3.2 |
+| convert_bng | 1 | 11.8 | - | - |
+| convert_bng | 4 | 3.1 | - | - |
+| convert_bng | 8 | 1.6 | 3.3 | 2.0 |
+| convert_latlon | 1 | 19.9 | - | - |
+| convert_latlon | 4 | 5.2 | - | - |
+| convert_latlon | 8 | 2.7 | 6.3 | 3.2 |
 
 Results for **4-Core** i5-7500 CPU @ 3.40GHz
 
 | Function | Threads/Cores | Julia (s) | Rust Ctypes (s) | Rust Cython (s) |
 | :---: | :---: | :---: | :---: | :---: |
-| convert_bng | 1 | 22.3 | - | - |
-| convert_bng | 4 | 8.0 | 8.5 | 5.5 |
-| convert_latlon | 1 | 34.5 | - | - |
-| convert_latlon | 4 | 10.8 | 16.2 | 9.8 |
+| convert_bng | 1 | 16.0 | - | - |
+| convert_bng | 4 | 4.4 | 8.5 | 5.5 |
+| convert_latlon | 1 | 26.8 | - | - |
+| convert_latlon | 4 | 7.3 | 16.2 | 9.8 |
 
 ## Tests
 After installation, the unit tests can (and should) be run by entering the following at the Julia REPL:
